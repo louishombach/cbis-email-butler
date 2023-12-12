@@ -1,25 +1,33 @@
 import React from 'react';
 
-export interface Email {
-  id: string;
-  subject: string;
-  from: string;
-  date: string;
-  body: string;
-}
+import { Email } from '@/app/api/email/interfaces';
 
 const EmailViewer = ({ email }: { email: Email }) => {
+  function extractHtml(body: string) {
+    const regex = /<html[^>]*>((.|[\n\r])*)<\/html>/im;
+    const result = regex.exec(body);
+    if (result) {
+      return result[1];
+    }
+    return '';
+  }
+
   return (
     <div>
       <h2>{email.subject}</h2>
       <p>From: {email.from}</p>
+      <p>To: {email.to}</p>
       <p>Date: {email.date}</p>
       <div className='body'>
-        <pre className='body-text'>{email.body}</pre>
         {/* You can add more formatting or styling as needed */}
+
+        <div
+          className='renderer'
+          dangerouslySetInnerHTML={{ __html: extractHtml(email.body) }}
+        />
       </div>
       <style jsx>{`
-        div {
+        .renderer {
           max-width: 90%;
           margin: auto;
           background-color: #fff;
