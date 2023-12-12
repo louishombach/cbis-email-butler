@@ -5,7 +5,7 @@
 [Github node-imap -> imap search parameters](https://github.com/mscdex/node-imap)
 [NPM imap-simple -> our imap client](https://www.npmjs.com/package/imap-simple)
 
-## Features
+## Project Features
 
 This repository is 🔋 battery packed with:
 
@@ -26,15 +26,20 @@ This repository is 🔋 battery packed with:
 - 🔥 Snippets — A collection of useful snippets
 - 👀 Open Graph Helper Function — Awesome open graph generated using [og](https://github.com/theodorusclarence/og), fork it and deploy!
 - 🗺 Site Map — Automatically generate sitemap.xml
-- 📦 Expansion Pack — Easily install common libraries, additional components, and configs.
 
-### 2. Install dependencies
+## Running this Project
+
+### 1. Install dependencies
 
 It is encouraged to use **yarn** so the husky hooks can work properly.
 
 ```bash
 yarn install
 ```
+
+### 2. Set up environment variables
+
+duplicate `.env.example` to `.env.local` and fill the variables. You will have to create a new Google App password for this.
 
 ### 3. Run the development server
 
@@ -46,6 +51,22 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You can start editing the page by modifying `src/pages/index.tsx`.
 
-### 5. Commit Message Convention
+### 4. Commit Message Convention
 
 This starter is using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/), it is mandatory to use it to commit changes.
+
+#### Examples
+
+##### Commit message with description and breaking change footer
+
+```bash
+feat: allow provided config object to extend other configs
+
+BREAKING CHANGE: `extends` key in config file is now used for extending other config files
+```
+
+##### Commit message with ! to draw attention to breaking change
+
+```bash
+feat!: send an email to the customer when a product is shipped
+```
