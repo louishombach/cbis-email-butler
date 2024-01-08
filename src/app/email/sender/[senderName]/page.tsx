@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import Link from 'next/link';
+import PostalMime from 'postal-mime';
 import { useEffect, useState } from 'react';
 
 import { Email, ISenderAllEmails } from '@/app/api/email/interfaces';
@@ -52,12 +53,24 @@ const SenderPage = ({ params }: { params: { senderName: string } }) => {
 };
 
 function DisplayEmailBody({ email }: { email: Email }) {
+  const [htmlContent, setHtmlContent] = useState<string>('');
+
   if (!email.body) return null;
+
+  if (email.body) {
+    const parser = new PostalMime();
+
+    // Filter body content based on Content-Type
+
+    parser.parse(email.body).then((parsedEmail) => {
+      setHtmlContent(parsedEmail.html ? parsedEmail.html : parsedEmail.text);
+    });
+  }
 
   return (
     <p className='flex-grow text-gray-700'>
-      {email.body?.substring(0, 200)}
-      {email.body?.length > 200 && '...'}
+      {htmlContent.substring(0, 200)}
+      {htmlContent.length > 200 && '...'}
     </p>
   );
 }
