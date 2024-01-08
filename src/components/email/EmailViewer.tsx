@@ -1,15 +1,57 @@
-import React from 'react';
+import PostalMime from 'postal-mime';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Email } from '@/app/api/email/interfaces';
 
 const EmailViewer = ({ email }: { email: Email }) => {
-  function extractHtml(body: string) {
-    const regex = /<html[^>]*>((.|[\n\r])*)<\/html>/im;
-    const result = regex.exec(body);
-    if (result) {
-      return result[1];
+  const emailContainerRef = useRef<HTMLDivElement>(null);
+  const [htmlContent, setHtmlContent] = useState<string>('');
+
+  useEffect(() => {
+    async function parseAndRenderEmail() {
+      const emailContainer = emailContainerRef.current;
+
+      if (emailContainer && email.body) {
+        const parser = new PostalMime();
+
+        // Filter body content based on Content-Type
+
+        const filteredBody = extractHtmlContent(email.body);
+
+        if (filteredBody) {
+          const parsedEmail = await parser.parse(filteredBody);
+          setHtmlContent(
+            parsedEmail.html ? parsedEmail.html : parsedEmail.text
+          );
+        } else {
+          console.log(
+            'No matching Content-Type found. Conmtent probably raw text'
+          );
+          const parsedEmail = await parser.parse(email.body);
+          setHtmlContent(
+            parsedEmail.html ? parsedEmail.html : parsedEmail.text
+          );
+        }
+      }
     }
-    return '';
+
+    parseAndRenderEmail();
+  }, [email]);
+
+  // Function to filter body content based on Content-Type
+  function extractHtmlContent(emailBody: string): string | null {
+    const regex = /Content-Type: text\/html;([\s\S]*?)<\/html>/i;
+
+    const match = emailBody.match(regex);
+
+    if (match) {
+      const htmlContentEntry = match.find((entry) =>
+        entry.startsWith('Content-Type: text/html')
+      );
+      return htmlContentEntry ? htmlContentEntry.trim() : null;
+    } else {
+      return null;
+    }
   }
 
   return (
@@ -19,27 +61,12 @@ const EmailViewer = ({ email }: { email: Email }) => {
       <p>To: {email.to}</p>
       <p>Date: {email.date}</p>
       <div className='body'>
-        {/* You can add more formatting or styling as needed */}
-
-        <div
-          className='renderer'
-          dangerouslySetInnerHTML={{ __html: extractHtml(email.body) }}
+        <span
+          ref={emailContainerRef}
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
         />
       </div>
       <style jsx>{`
-        .renderer {
-          max-width: 90%;
-          margin: auto;
-          background-color: #fff;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          padding: 20px;
-          margin-top: 20px;
-          border-radius: 8px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
-
         h2 {
           font-size: 1.5rem;
           font-weight: bold;
@@ -54,17 +81,11 @@ const EmailViewer = ({ email }: { email: Email }) => {
         .body {
           align-self: center;
           margin: 0;
-          background-color: rgb(228, 228, 228);
-
+          background-color: rgb(173, 173, 173);
+          padding: 1rem;
           margin-top: 2rem;
           width: 100% !important;
           max-width: 100% !important;
-        }
-        .body-text {
-          text-wrap: pretty;
-          font-weight: 600;
-          font-size: 1rem;
-          color: #333;
         }
       `}</style>
     </div>

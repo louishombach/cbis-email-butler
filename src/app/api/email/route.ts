@@ -23,6 +23,7 @@ export async function GET() {
       positiveFilters: ['banking', 'bank', 'dkb', 'Volksbank', 'Sparkasse'],
       negativeFilters: ['tier.app', 'heygen', 'interactive brokers', '1&1'],
     },
+
     //social should be filtered by sender
     // {
     //   topic: 'Social',
