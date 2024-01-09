@@ -14,8 +14,7 @@ const EmailViewer = ({ email }: { email: Email }) => {
       if (emailContainer && email.body) {
         const parser = new PostalMime();
 
-        // Filter body content based on Content-Type
-
+        // Filter body content based on Content-Type        
         const filteredBody = extractHtmlContent(email.body);
 
         if (filteredBody) {

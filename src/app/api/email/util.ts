@@ -29,6 +29,9 @@ export async function connectToImap() {
 
 // Method to save the result to a file
 export function saveResultToFile(result: IGetCategorisedEmails) {
+  for (let i=0; i<result.byTopic.length; i++){
+    result.byTopic[i].emails.reverse()
+  }  
   const resultJson = JSON.stringify(result, null, 2);
   fs.writeFileSync('filteredEmails.json', resultJson);
 }
@@ -36,8 +39,11 @@ export function saveResultToFile(result: IGetCategorisedEmails) {
 // Method to read the JSON file and return the parsed object
 export async function readResultFromFile(): Promise<IGetCategorisedEmails> {
   try {
-    const fileContent = fs.readFileSync('filteredEmails.json', 'utf-8');
+    const fileContent = fs.readFileSync('filteredEmails.json', 'utf-8');    
     const parsedResult = JSON.parse(fileContent) as IGetCategorisedEmails;
+    for (let i=0; i<parsedResult.byTopic.length; i++){
+      parsedResult.byTopic[i].emails.reverse()
+    }
     return parsedResult;
   } catch (error) {
     console.error('Error reading the file:', error);

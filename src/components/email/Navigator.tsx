@@ -18,11 +18,11 @@ export default function Navigator() {
   const handleRefresh = async () => {
     try {
       // Fetch data from the offline endpoint
-      // const response = await axios.get(
-      //   'http://localhost:3000/api/email/offline'
-      // );
+       const response = await axios.get(
+         'http://localhost:3000/api/email/offline'
+       );
 
-      const response = await axios.get('http://localhost:3000/api/email');
+      //const response = await axios.get('http://localhost:3000/api/email');
 
       // Assuming the response.data contains the filtered email data
       const { byTopic, bySender } = response.data;
