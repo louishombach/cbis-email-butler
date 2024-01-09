@@ -41,9 +41,6 @@ export async function readResultFromFile(): Promise<IGetCategorisedEmails> {
   try {
     const fileContent = fs.readFileSync('filteredEmails.json', 'utf-8');    
     const parsedResult = JSON.parse(fileContent) as IGetCategorisedEmails;
-    for (let i=0; i<parsedResult.byTopic.length; i++){
-      parsedResult.byTopic[i].emails.reverse()
-    }
     return parsedResult;
   } catch (error) {
     console.error('Error reading the file:', error);
